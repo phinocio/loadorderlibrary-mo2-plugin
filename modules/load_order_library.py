@@ -5,7 +5,7 @@ import urllib.parse
 import urllib.request as request
 
 VERSION = "1.0.0"
-BASE_URI = "https://testingapi.loadorderlibrary.com/v1"
+BASE_URI = "https://api.loadorderlibrary.com/v1"
 LISTS_URI = BASE_URI + "/lists"
 
 

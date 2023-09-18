@@ -44,7 +44,7 @@ class LolMo2Upload(mobase.IPluginTool):
         return self.__tr("Allows uploading directly to Load Order Library.")
 
     def version(self) -> mobase.VersionInfo:
-        return mobase.VersionInfo(1, 0, 0, mobase.ReleaseType.ALPHA)
+        return mobase.VersionInfo(1, 0, 0, mobase.ReleaseType.BETA)
 
     def isActive(self) -> bool:
         return self._organizer.pluginSetting(self.name(), "enabled")
@@ -104,20 +104,7 @@ class LolMo2Upload(mobase.IPluginTool):
             <a href='https://github.com/phinocio/loadorderlibrary-mo2-plugin'>GitHub.</a>"
         )
         msg.setDetailedText(
-            "Name: "
-            + listName
-            + "\nVersion: "
-            + str(listVer)
-            + "\nDescription: "
-            + listDesc
-            + "\nWebsite: "
-            + (website if len(website) > 0 else "none")
-            + "\nDiscord: "
-            + discord
-            + "\nReadme: "
-            + readme
-            + "\nPrivate: "
-            + str(private)
+            f'Name: {listName}\nVersion: {str(listVer)}\nDescription: {listDesc}\nWebsite: {(website if len(website) > 0 else "none")}\nDiscord: {discord}\nReadme: {readme}\nPrivate: {str(private)}'
         )
         msg.setIcon(QMessageBox.Question)
         msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)

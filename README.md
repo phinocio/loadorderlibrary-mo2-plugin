@@ -4,12 +4,6 @@
 
 The purpose of this plugin is to use the Load Order Library API to allow Mod Organizer 2 users to upload/update their currently selected to Load Order Library. It gets the current game MO2 is managing and uploads the currently selected profile.
 
-# Limitations
+# Using an API Token
 
-Currently, the plugin _only_ uploads a new list each time. I will implement _updating_ a list once I add that functionality to the API itself.
-
-API tokens are currently a plugin setting. This means they are then stored in `ModOrganizer.ini`, this is insecure as sometimes that file is shared. I am looking into a better place to store the API tokens.
-
-The code is a mess. I need to split some functionality out into other files/classes, and map game names to IDs fully.
-
-I also need to figure out a good way to allow choosing what files are uploaded. Some peeps do all the things, some only modlist.txt
+Using an API token is only necessary if you want to update lists.

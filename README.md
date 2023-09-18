@@ -63,3 +63,7 @@ Once successful, there will be a pop up with a clickable link to view the list.
 If there is an error, it will instead show a dialog of what the error was. Normally it's either an incorrectly pasted token, or one created without the proper abilities.
 
 If you are using an API Token, future uploads will _update_ the list you just created.
+
+# Installation
+
+Extract the folder in the archive to `%MO2DIR%/plugins` such that it becomes `%MO2DIR%/plugins/lolmo2plugin`

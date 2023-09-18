@@ -120,6 +120,7 @@ class LolMo2Upload(mobase.IPluginTool):
         website = self.getSetting("list_website")
         discord = self.getSetting("list_discord")
         readme = self.getSetting("list_readme")
+        files = self.getSetting("upload_files")
         if self._apiToken and self._slug:
             action = "update"
         msg = QMessageBox()
@@ -135,7 +136,7 @@ class LolMo2Upload(mobase.IPluginTool):
             <a href='https://github.com/phinocio/loadorderlibrary-mo2-plugin'>GitHub.</a>"
         )
         msg.setDetailedText(
-            f'Name: {listName}\nVersion: {str(listVer)}\nDescription: {listDesc}\nWebsite: {(website if len(website) > 0 else "none")}\nDiscord: {discord}\nReadme: {readme}\nPrivate: {str(private)}'
+            f'Name: {listName}\nVersion: {str(listVer)}\nDescription: {listDesc}\nWebsite: {(website if len(website) > 0 else "none")}\nDiscord: {discord}\nReadme: {readme}\nPrivate: {str(private)}\nFiles: {files}'
         )
         msg.setIcon(QMessageBox.Question)
         msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)

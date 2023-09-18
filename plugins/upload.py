@@ -7,9 +7,14 @@ from typing import List
 
 from ..modules.load_order_library import LolUpload
 
-from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtGui import QIcon
+try:
+    from PyQt5.QtCore import QCoreApplication
+    from PyQt5.QtWidgets import QMessageBox
+    from PyQt5.QtGui import QIcon
+except:
+    from PyQt6.QtCore import QCoreApplication
+    from PyQt6.QtWidgets import QMessageBox
+    from PyQt6.QtGui import QIcon
 
 
 class LolMo2Upload(mobase.IPluginTool):
@@ -143,12 +148,14 @@ class LolMo2Upload(mobase.IPluginTool):
         msg.setDetailedText(
             f'Name: {listName}\nVersion: {str(listVer)}\nDescription: {listDesc}\nWebsite: {(website if len(website) > 0 else "none")}\nDiscord: {discord}\nReadme: {readme}\nPrivate: {str(private)}\nFiles: {files}'
         )
-        msg.setIcon(QMessageBox.Question)
-        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        msg.setIcon(QMessageBox.Icon.Question)
+        msg.setStandardButtons(
+            QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel
+        )
 
         msg.buttonClicked.connect(self.popup_button)
 
-        msg.exec_()
+        msg.exec()
 
     def popup_button(self, i) -> None:
         if i.text() == "OK":
@@ -165,16 +172,16 @@ class LolMo2Upload(mobase.IPluginTool):
                     # be populated.
                     self.loadData()
                 msg = QMessageBox()
-                msg.setIcon(QMessageBox.Information)
+                msg.setIcon(QMessageBox.Icon.Information)
                 msg.setWindowTitle("Success!")
                 msg.setText("Success! Visit your list <a href=" + url + ">here.</a>")
             else:
                 msg = QMessageBox()
-                msg.setIcon(QMessageBox.Critical)
+                msg.setIcon(QMessageBox.Icon.Critical)
                 msg.setWindowTitle("Failue!")
                 msg.setText(f'Upload failed: {list["message"]}')
 
-            msg.exec_()
+            msg.exec()
 
     def getSetting(self, settingName) -> mobase.PluginSetting:
         return self._organizer.pluginSetting(self.name(), settingName)

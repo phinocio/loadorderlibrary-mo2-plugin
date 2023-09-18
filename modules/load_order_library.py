@@ -5,7 +5,7 @@ import urllib.parse
 import urllib.request as request
 
 VERSION = "1.0.0"
-BASE_URI = "https://api.loadorderlibrary.com/v1"
+BASE_URI = "https://testingapi.loadorderlibrary.com/v1"
 LISTS_URI = BASE_URI + "/lists"
 
 
@@ -44,7 +44,7 @@ class LolUpload:
         files = []
 
         for file in plugin.getSetting("upload_files").split(","):
-            files.append(plugin._organizer.profile().absoluteIniFilePath(file))
+            files.append(f"{plugin._organizer.profile().absolutePath()}/{file}")
 
         # files = [
         #     plugin._organizer.profile().absoluteIniFilePath("modlist.txt"),
@@ -67,10 +67,10 @@ class LolUpload:
             "private": "1" if bool(plugin.getSetting("list_readme")) else "0",
         }
 
-        files = [
-            plugin._organizer.profile().absoluteIniFilePath("modlist.txt"),
-            plugin._organizer.profile().absoluteIniFilePath("plugins.txt"),
-        ]
+        files = []
+
+        for file in plugin.getSetting("upload_files").split(","):
+            files.append(f"{plugin._organizer.profile().absolutePath()}/{file}")
 
         return self.sendPostRequest(url, data, files)
 

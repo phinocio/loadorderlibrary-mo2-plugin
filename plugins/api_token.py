@@ -7,9 +7,14 @@ from typing import List
 
 from .upload import LolMo2Upload
 
-from PyQt5.QtCore import QCoreApplication, qCritical, QDir, qDebug
-from PyQt5.QtWidgets import QMessageBox, QInputDialog
-from PyQt5.QtGui import QIcon
+try:
+    from PyQt5.QtCore import QCoreApplication
+    from PyQt5.QtWidgets import QMessageBox, QInputDialog
+    from PyQt5.QtGui import QIcon
+except:
+    from PyQt6.QtCore import QCoreApplication
+    from PyQt6.QtWidgets import QMessageBox, QInputDialog
+    from PyQt6.QtGui import QIcon
 
 
 class LolMo2ApiToken(LolMo2Upload, mobase.IPluginTool):
@@ -63,7 +68,7 @@ class LolMo2ApiToken(LolMo2Upload, mobase.IPluginTool):
 
         if done:
             msg = QMessageBox()
-            msg.setIcon(QMessageBox.Information)
+            msg.setIcon(QMessageBox.Icon.Information)
             msg.setWindowTitle("Success!")
             msg.setText("Success! Your API token was removed.")
             if token == "":
@@ -72,7 +77,7 @@ class LolMo2ApiToken(LolMo2Upload, mobase.IPluginTool):
                 self._apiToken = token
                 msg.setText("Success! Your API token was added.")
             self.saveData()
-            msg.exec_()
+            msg.exec()
 
     def saveData(self) -> None:
         dir = os.path.join(os.getenv("LOCALAPPDATA"), self._appDataDir)

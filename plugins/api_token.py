@@ -57,8 +57,16 @@ class LolMo2ApiToken(LolMo2Upload, mobase.IPluginTool):
         token, done = msg.getText(msg, "API Token", "Token: ")
 
         if done:
-            self._apiToken = token
+            if token == "":
+                self._apiToken = None
+            else:
+                self._apiToken = token
             self.saveData()
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowTitle("Success!")
+            msg.setText("Success! Your API token was added.")
+            msg.exec_()
 
     def saveData(self) -> None:
         dir = os.path.join(os.getenv("LOCALAPPDATA"), self._appDataDir)

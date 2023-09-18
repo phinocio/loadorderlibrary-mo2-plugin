@@ -1,6 +1,7 @@
 import mobase
 import os
 import json
+import hashlib
 
 from typing import List
 
@@ -15,6 +16,7 @@ class LolMo2ApiToken(LolMo2Upload, mobase.IPluginTool):
     _appDataDir = "LoadOrderLibrary"
     _apiToken = None
     _slug = None
+    _dataFile = ""
 
     def __init__(self):
         super().__init__()
@@ -23,6 +25,9 @@ class LolMo2ApiToken(LolMo2Upload, mobase.IPluginTool):
         return QCoreApplication.translate(self._name, str_)
 
     def init(self, organizer=mobase.IOrganizer):
+        self._dataFile = (
+            hashlib.md5(organizer.basePath().encode()).hexdigest() + "-data.json"
+        )
         self.loadData()
         return super().init(organizer)
 
@@ -71,17 +76,21 @@ class LolMo2ApiToken(LolMo2Upload, mobase.IPluginTool):
 
     def saveData(self) -> None:
         dir = os.path.join(os.getenv("LOCALAPPDATA"), self._appDataDir)
-        file = os.path.join(dir, "data.json")
+        file = os.path.join(dir, self._dataFile)
         if not os.path.exists(dir):
             os.mkdir(dir)
 
-        data = {"apiToken": self._apiToken, "slug": self._slug}
+        data = {
+            "apiToken": self._apiToken,
+            "slug": self._slug,
+            "basePath": self._organizer.basePath(),
+        }
         with open(file, "w", encoding="utf-8") as f:
             json.dump(data, f)
 
     def loadData(self) -> None:
         dir = os.path.join(os.getenv("LOCALAPPDATA"), self._appDataDir)
-        file = os.path.join(dir, "data.json")
+        file = os.path.join(dir, self._dataFile)
         if not os.path.exists(dir):
             os.mkdir(dir)
             self._apiToken = None

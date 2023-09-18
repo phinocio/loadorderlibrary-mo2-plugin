@@ -1,12 +1,13 @@
 import mobase
 import os
 import json
+import hashlib
 
 from typing import List
 
 from ..modules.load_order_library import LolUpload
 
-from PyQt5.QtCore import QCoreApplication, qCritical, QDir, qDebug
+from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QIcon
 
@@ -17,6 +18,7 @@ class LolMo2Upload(mobase.IPluginTool):
     _name = "Load Order Library Upload"
     _frontendUrl = "https://loadorderlibrary.com"
     _appDataDir = "LoadOrderLibrary"
+    _dataFile = ""
     _gameIds = {
         "Cyberpunk 2077": 11,
         "Dark Messiah of Might & Magic": 13,
@@ -61,6 +63,9 @@ class LolMo2Upload(mobase.IPluginTool):
     def init(self, organizer: mobase.IOrganizer):
         self._organizer = organizer
         self._profile = organizer.profile()
+        self._dataFile = (
+            hashlib.md5(organizer.basePath().encode()).hexdigest() + "-data.json"
+        )
         # Get API token from appdata
         self.loadData()
         return True
@@ -179,17 +184,21 @@ class LolMo2Upload(mobase.IPluginTool):
 
     def saveData(self) -> None:
         dir = os.path.join(os.getenv("LOCALAPPDATA"), self._appDataDir)
-        file = os.path.join(dir, "data.json")
+        file = os.path.join(dir, self._dataFile)
         if not os.path.exists(dir):
             os.mkdir(dir)
 
-        data = {"apiToken": self._apiToken, "slug": self._slug}
+        data = {
+            "apiToken": self._apiToken,
+            "slug": self._slug,
+            "basePath": self._organizer.basePath(),
+        }
         with open(file, "w", encoding="utf-8") as f:
             json.dump(data, f)
 
     def loadData(self) -> None:
         dir = os.path.join(os.getenv("LOCALAPPDATA"), self._appDataDir)
-        file = os.path.join(dir, "data.json")
+        file = os.path.join(dir, self._dataFile)
         if not os.path.exists(dir):
             os.mkdir(dir)
             self._apiToken = None

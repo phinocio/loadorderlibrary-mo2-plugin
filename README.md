@@ -4,6 +4,8 @@ The purpose of this plugin is to use the Load Order Library API to allow Mod Org
 
 For now, I'm only comfortable saying Bethesda games are "officially" supported, I have no idea how the other games work with MO2, please report any issues with any games you come across! That said, the plugin should auto detect whatever game is being managed.
 
+> **NOTE**: The plugin assumes you use profile specific ini files.
+
 # Settings
 
 Use the plugin settings in MO2 to configure things like the list name, version, private, etc.

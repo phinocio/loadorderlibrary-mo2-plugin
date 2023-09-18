@@ -15,7 +15,7 @@ class LolMo2Upload(mobase.IPluginTool):
     _organizer: mobase.IOrganizer
     _profile: mobase.IProfile
     _name = "Load Order Library Upload"
-    _apiUrl = "https://testing.loadorderlibrary.com"
+    _frontendUrl = "https://loadorderlibrary.com"
     _appDataDir = "LoadOrderLibrary"
     _gameIds = {"Skyrim Special Edition": 4, "Starfield": 30}
     _apiToken = None
@@ -44,7 +44,7 @@ class LolMo2Upload(mobase.IPluginTool):
         return self.__tr("Allows uploading directly to Load Order Library.")
 
     def version(self) -> mobase.VersionInfo:
-        return mobase.VersionInfo(0, 0, 1, mobase.ReleaseType.ALPHA)
+        return mobase.VersionInfo(1, 0, 0, mobase.ReleaseType.ALPHA)
 
     def isActive(self) -> bool:
         return self._organizer.pluginSetting(self.name(), "enabled")
@@ -131,10 +131,9 @@ class LolMo2Upload(mobase.IPluginTool):
             lolUpload = LolUpload(self, self._apiToken, self._slug)
             list = lolUpload.upload()
             if "data" in list.keys():
-                url = self._apiUrl + list["data"]["links"]["url"]
+                url = self._frontendUrl + list["data"]["links"]["url"]
                 if self._apiToken is not None:
                     self._slug = list["data"]["slug"]
-                    print(self._slug)
                     self.saveData()
                     # If the list was created and we don't
                     # load the data again, the user needs
@@ -152,7 +151,6 @@ class LolMo2Upload(mobase.IPluginTool):
                 msg.setText(f'Upload failed: {list["message"]}')
 
             msg.exec_()
-        print(i.text())
 
     def getSetting(self, settingName) -> mobase.PluginSetting:
         return self._organizer.pluginSetting(self.name(), settingName)
@@ -167,7 +165,6 @@ class LolMo2Upload(mobase.IPluginTool):
             os.mkdir(dir)
 
         data = {"apiToken": self._apiToken, "slug": self._slug}
-        print(self._slug)
         with open(file, "w", encoding="utf-8") as f:
             json.dump(data, f)
 

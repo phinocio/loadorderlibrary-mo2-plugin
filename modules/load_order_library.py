@@ -4,8 +4,8 @@ import json
 import urllib.parse
 import urllib.request as request
 
-VERSION = "0.0.1"
-BASE_URI = "https://testingapi.loadorderlibrary.com/v1"
+VERSION = "1.0.0"
+BASE_URI = "https://api.loadorderlibrary.com/v1"
 LISTS_URI = BASE_URI + "/lists"
 
 
@@ -27,7 +27,6 @@ class LolUpload:
             return self.createList(self._plugin)
 
     def updateList(self, plugin):
-        print("Updating list!")
         url = f"{LISTS_URI}/{self._slug}"
 
         data = {
@@ -55,7 +54,6 @@ class LolUpload:
         return self.sendPostRequest(url, data, files)
 
     def createList(self, plugin):
-        print("Creating a list")
         url = LISTS_URI
 
         data = {
@@ -68,10 +66,6 @@ class LolUpload:
             "readme": plugin.getSetting("list_readme"),
             "private": "1" if bool(plugin.getSetting("list_readme")) else "0",
         }
-
-        print(
-            f'AAAAAAAAAAAAAAAAA The list is:{str(plugin.getSetting("list_private")).lower()}'
-        )
 
         files = [
             plugin._organizer.profile().absoluteIniFilePath("modlist.txt"),
@@ -114,8 +108,6 @@ class LolUpload:
         req = urllib.request.Request(url, data=data_bytes)
         req.method = "POST"
 
-        # TODO: REMOVE FROM SETTINGS before full release. Setting values get
-        # put into ModOrganizer.ini, making it insecure for tokens.
         req.headers = {
             "Accept": "application/json",
             "User-Agent": "lol-mo2-plugin/" + VERSION,

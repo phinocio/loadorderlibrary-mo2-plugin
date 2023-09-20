@@ -167,28 +167,45 @@ class LolMo2Upload(mobase.IPluginTool):
     def saveData(self) -> None:
         dir = os.path.join(os.getenv("LOCALAPPDATA"), self._appDataDir)
         file = os.path.join(dir, self._dataFile)
-        if not os.path.exists(dir):
-            os.mkdir(dir)
+        try:
+            if not os.path.exists(dir):
+                os.mkdir(dir)
 
-        data = {
-            "apiToken": self._apiToken,
-            "slug": self._slug,
-            "basePath": self._organizer.basePath(),
-        }
-        with open(file, "w", encoding="utf-8") as f:
-            json.dump(data, f)
+            data = {
+                "apiToken": self._apiToken,
+                "slug": self._slug,
+                "basePath": self._organizer.basePath(),
+            }
+            print(data)
+            with open(file, "w") as f:
+                json.dump(data, f)
+        except Exception as e:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setWindowTitle("File Read Error!")
+            msg.setText(f"Something went wrong reading the data file. {e}")
+            msg.exec()
+            raise
 
     def loadData(self) -> None:
         dir = os.path.join(os.getenv("LOCALAPPDATA"), self._appDataDir)
         file = os.path.join(dir, self._dataFile)
-        if not os.path.exists(dir):
-            os.mkdir(dir)
-            self._apiToken = None
-            self._slug = None
-            return
+        try:
+            if not os.path.exists(dir):
+                os.mkdir(dir)
+                self._apiToken = None
+                self._slug = None
+                return
 
-        if os.path.isfile(file):
-            with open(file, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                self._apiToken = data["apiToken"]
-                self._slug = data["slug"]
+            if os.path.isfile(file):
+                with open(file, "r") as f:
+                    data = json.load(f)
+                    self._apiToken = data["apiToken"]
+                    self._slug = data["slug"]
+        except Exception as e:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setWindowTitle("File Read Error!")
+            msg.setText(f"Something went wrong reading the data file. {e}")
+            msg.exec()
+            raise

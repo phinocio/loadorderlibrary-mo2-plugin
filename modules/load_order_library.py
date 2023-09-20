@@ -4,7 +4,12 @@ import json
 import urllib.parse
 import urllib.request as request
 
-VERSION = "1.0.0"
+try:
+    from PyQt5.QtWidgets import QMessageBox
+except:
+    from PyQt6.QtWidgets import QMessageBox
+
+VERSION = "1.2.0"
 BASE_URI = "https://api.loadorderlibrary.com/v1"
 LISTS_URI = BASE_URI + "/lists"
 
@@ -118,18 +123,26 @@ class LolUpload:
             if mime_type is None:
                 mime_type = "application/octet-stream"
             file_name = os.path.basename(file_path)
-            with open(file_path, "rb") as file:
-                data_bytes += "--{}\r\n".format(boundary).encode("utf-8")
-                data_bytes += 'Content-Disposition: form-data; name="files[]"; filename="{}"\r\n'.format(
-                    file_name
-                ).encode(
-                    "utf-8"
-                )
-                data_bytes += "Content-Type: {}\r\n\r\n".format(mime_type).encode(
-                    "utf-8"
-                )
-                data_bytes += file.read()
-                data_bytes += b"\r\n"
+            try:
+                with open(file_path, "rb") as file:
+                    data_bytes += "--{}\r\n".format(boundary).encode("utf-8")
+                    data_bytes += 'Content-Disposition: form-data; name="files[]"; filename="{}"\r\n'.format(
+                        file_name
+                    ).encode(
+                        "utf-8"
+                    )
+                    data_bytes += "Content-Type: {}\r\n\r\n".format(mime_type).encode(
+                        "utf-8"
+                    )
+                    data_bytes += file.read()
+                    data_bytes += b"\r\n"
+            except Exception as e:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Icon.Critical)
+                msg.setWindowTitle("File Read Error!")
+                msg.setText(f"Something went wrong reading profile file. {e}")
+                msg.exec()
+                raise
         data_bytes += "--{}--\r\n".format(boundary).encode("utf-8")
 
         # Create a request object

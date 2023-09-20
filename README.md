@@ -46,6 +46,10 @@ After it opens, paste your token and click ok.
 
 That's it! Uploads should now create the list on first upload, and then update it afterwards.
 
+# Slug
+
+If you want to manage an existing list, copy the slug (the part after `lists/` in the url), then follow the same steps as adding an API Token, but click "Set slug" instead.
+
 ## Uploading a list
 
 To upload a list, follow the steps in the image below.

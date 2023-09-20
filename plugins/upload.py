@@ -17,6 +17,13 @@ except:
     from PyQt6.QtGui import QIcon
 
 
+"""
+This is the "base" plugin, the api_token.py plugin inherits from
+this one. Meaning that we don't need to redefine a lot of 
+methods present in here.
+"""
+
+
 class LolMo2Upload(mobase.IPluginTool):
     _organizer: mobase.IOrganizer
     _profile: mobase.IProfile
@@ -24,45 +31,13 @@ class LolMo2Upload(mobase.IPluginTool):
     _frontendUrl = "https://loadorderlibrary.com"
     _appDataDir = "LoadOrderLibrary"
     _dataFile = ""
-    _gameIds = {
-        "Cyberpunk 2077": 11,
-        "Dark Messiah of Might & Magic": 13,
-        "Dark Souls": 14,
-        "Darkest Dungeon": 12,
-        "Dragon Age II": 15,
-        "Dragon Age: Origins": 16,
-        "Dungeon Siege II": 17,
-        "Enderal": 28,
-        "Enderal SE": 29,
-        "Fallout 3": 6,
-        "Fallout 4": 8,
-        "Fallout 4 VR": 9,
-        "Fallout New Vegas": 7,
-        "Kerbal Space Program": 18,
-        "Kingdom Come: Deliverance": 19,
-        "Mirror's Edge": 20,
-        "Mount & Blade II: Bannerlord": 21,
-        "No Man's Sky": 22,
-        "STALKER Anomaly": 23,
-        "Stardew Valley": 24,
-        "Starfield": 30,
-        "Tale of Two Wastelands": 10,
-        "Morrowind": 1,
-        "Oblivion": 2,
-        "Skyrim": 3,
-        "Skyrim Special Edition": 4,
-        "Skyrim VR": 5,
-        "The Binding of Isaac: Rebirth": 25,
-        "The Witcher 3: Wild Hunt": 26,
-        "Zeus and Poseidon": 27,
-    }
     _apiToken = None
     _slug = None
 
     def __init__(self):
         super().__init__()
 
-    def __tr(self, str_):
+    def tr(self, str_):
         return QCoreApplication.translate(self._name, str_)
 
     def init(self, organizer: mobase.IOrganizer):
@@ -82,10 +57,10 @@ class LolMo2Upload(mobase.IPluginTool):
         return "Phinocio"
 
     def description(self) -> str:
-        return self.__tr("Allows uploading directly to Load Order Library.")
+        return self.tr("Allows uploading directly to Load Order Library.")
 
     def version(self) -> mobase.VersionInfo:
-        return mobase.VersionInfo(1, 0, 0, mobase.ReleaseType.BETA)
+        return mobase.VersionInfo(1, 2, 0, mobase.ReleaseType.FINAL)
 
     def isActive(self) -> bool:
         return self._organizer.pluginSetting(self.name(), "enabled")
@@ -192,28 +167,45 @@ class LolMo2Upload(mobase.IPluginTool):
     def saveData(self) -> None:
         dir = os.path.join(os.getenv("LOCALAPPDATA"), self._appDataDir)
         file = os.path.join(dir, self._dataFile)
-        if not os.path.exists(dir):
-            os.mkdir(dir)
+        try:
+            if not os.path.exists(dir):
+                os.mkdir(dir)
 
-        data = {
-            "apiToken": self._apiToken,
-            "slug": self._slug,
-            "basePath": self._organizer.basePath(),
-        }
-        with open(file, "w", encoding="utf-8") as f:
-            json.dump(data, f)
+            data = {
+                "apiToken": self._apiToken,
+                "slug": self._slug,
+                "basePath": self._organizer.basePath(),
+            }
+            print(data)
+            with open(file, "w") as f:
+                json.dump(data, f)
+        except Exception as e:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setWindowTitle("File Read Error!")
+            msg.setText(f"Something went wrong reading the data file. {e}")
+            msg.exec()
+            raise
 
     def loadData(self) -> None:
         dir = os.path.join(os.getenv("LOCALAPPDATA"), self._appDataDir)
         file = os.path.join(dir, self._dataFile)
-        if not os.path.exists(dir):
-            os.mkdir(dir)
-            self._apiToken = None
-            self._slug = None
-            return
+        try:
+            if not os.path.exists(dir):
+                os.mkdir(dir)
+                self._apiToken = None
+                self._slug = None
+                return
 
-        if os.path.isfile(file):
-            with open(file, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                self._apiToken = data["apiToken"]
-                self._slug = data["slug"]
+            if os.path.isfile(file):
+                with open(file, "r") as f:
+                    data = json.load(f)
+                    self._apiToken = data["apiToken"]
+                    self._slug = data["slug"]
+        except Exception as e:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setWindowTitle("File Read Error!")
+            msg.setText(f"Something went wrong reading the data file. {e}")
+            msg.exec()
+            raise

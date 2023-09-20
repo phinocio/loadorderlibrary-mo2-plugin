@@ -4,34 +4,67 @@ import json
 import urllib.parse
 import urllib.request as request
 
-VERSION = "1.0.0"
+try:
+    from PyQt5.QtWidgets import QMessageBox
+except:
+    from PyQt6.QtWidgets import QMessageBox
+
+VERSION = "1.2.0"
 BASE_URI = "https://api.loadorderlibrary.com/v1"
 LISTS_URI = BASE_URI + "/lists"
 
 
 class LolUpload:
-    _apiToken = None
-    _slug = None
+    _gameIds = {
+        "Cyberpunk 2077": 11,
+        "Dark Messiah of Might & Magic": 13,
+        "Dark Souls": 14,
+        "Darkest Dungeon": 12,
+        "Dragon Age II": 15,
+        "Dragon Age: Origins": 16,
+        "Dungeon Siege II": 17,
+        "Enderal": 28,
+        "Enderal SE": 29,
+        "Fallout 3": 6,
+        "Fallout 4": 8,
+        "Fallout 4 VR": 9,
+        "Fallout New Vegas": 7,
+        "Kerbal Space Program": 18,
+        "Kingdom Come: Deliverance": 19,
+        "Mirror's Edge": 20,
+        "Mount & Blade II: Bannerlord": 21,
+        "No Man's Sky": 22,
+        "STALKER Anomaly": 23,
+        "Stardew Valley": 24,
+        "Starfield": 30,
+        "Tale of Two Wastelands": 10,
+        "Morrowind": 1,
+        "Oblivion": 2,
+        "Skyrim": 3,
+        "Skyrim Special Edition": 4,
+        "Skyrim VR": 5,
+        "The Binding of Isaac: Rebirth": 25,
+        "The Witcher 3: Wild Hunt": 26,
+        "Zeus and Poseidon": 27,
+    }
 
     def __init__(self, plugin, apiToken=None, slug=None):
         self._plugin = plugin
-        self._apiToken = apiToken
-        self._slug = slug
 
     def upload(self):
         # User is using a token, so they probably want to
         # update a list if a slug is present.
-        if self._apiToken is not None and self._slug is not None:
+        if self._plugin._apiToken is not None and self._plugin._slug is not None:
             return self.updateList(self._plugin)
         else:
             return self.createList(self._plugin)
 
     def updateList(self, plugin):
-        url = f"{LISTS_URI}/{self._slug}"
+        url = f"{LISTS_URI}/{self._plugin._slug}"
 
         data = {
             "name": plugin.getSetting("list_name"),
-            "game": str(plugin._gameIds[plugin._organizer.managedGame().gameName()]),
+            "game": str(self._gameIds[plugin._organizer.managedGame().gameName()]),
             "version": plugin.getSetting("list_version"),
             "description": plugin.getSetting("list_description"),
             "website": plugin.getSetting("list_website"),
@@ -58,7 +91,7 @@ class LolUpload:
 
         data = {
             "name": plugin.getSetting("list_name"),
-            "game": str(plugin._gameIds[plugin._organizer.managedGame().gameName()]),
+            "game": str(self._gameIds[plugin._organizer.managedGame().gameName()]),
             "version": plugin.getSetting("list_version"),
             "description": plugin.getSetting("list_description"),
             "website": plugin.getSetting("list_website"),
@@ -90,18 +123,26 @@ class LolUpload:
             if mime_type is None:
                 mime_type = "application/octet-stream"
             file_name = os.path.basename(file_path)
-            with open(file_path, "rb") as file:
-                data_bytes += "--{}\r\n".format(boundary).encode("utf-8")
-                data_bytes += 'Content-Disposition: form-data; name="files[]"; filename="{}"\r\n'.format(
-                    file_name
-                ).encode(
-                    "utf-8"
-                )
-                data_bytes += "Content-Type: {}\r\n\r\n".format(mime_type).encode(
-                    "utf-8"
-                )
-                data_bytes += file.read()
-                data_bytes += b"\r\n"
+            try:
+                with open(file_path, "rb") as file:
+                    data_bytes += "--{}\r\n".format(boundary).encode("utf-8")
+                    data_bytes += 'Content-Disposition: form-data; name="files[]"; filename="{}"\r\n'.format(
+                        file_name
+                    ).encode(
+                        "utf-8"
+                    )
+                    data_bytes += "Content-Type: {}\r\n\r\n".format(mime_type).encode(
+                        "utf-8"
+                    )
+                    data_bytes += file.read()
+                    data_bytes += b"\r\n"
+            except Exception as e:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Icon.Critical)
+                msg.setWindowTitle("File Read Error!")
+                msg.setText(f"Something went wrong reading profile file. {e}")
+                msg.exec()
+                raise
         data_bytes += "--{}--\r\n".format(boundary).encode("utf-8")
 
         # Create a request object
@@ -113,8 +154,8 @@ class LolUpload:
             "User-Agent": "lol-mo2-plugin/" + VERSION,
             "Content-Type": f"multipart/form-data; boundary={boundary}",
         }
-        if self._apiToken:
-            req.add_header("Authorization", "Bearer " + self._apiToken)
+        if self._plugin._apiToken:
+            req.add_header("Authorization", "Bearer " + self._plugin._apiToken)
 
         try:
             # Send the request and get the response

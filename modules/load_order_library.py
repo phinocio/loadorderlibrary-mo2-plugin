@@ -10,8 +10,6 @@ LISTS_URI = BASE_URI + "/lists"
 
 
 class LolUpload:
-    _apiToken = None
-    _slug = None
     _gameIds = {
         "Cyberpunk 2077": 11,
         "Dark Messiah of Might & Magic": 13,
@@ -47,19 +45,17 @@ class LolUpload:
 
     def __init__(self, plugin, apiToken=None, slug=None):
         self._plugin = plugin
-        self._apiToken = apiToken
-        self._slug = slug
 
     def upload(self):
         # User is using a token, so they probably want to
         # update a list if a slug is present.
-        if self._apiToken is not None and self._slug is not None:
+        if self._plugin._apiToken is not None and self._plugin._slug is not None:
             return self.updateList(self._plugin)
         else:
             return self.createList(self._plugin)
 
     def updateList(self, plugin):
-        url = f"{LISTS_URI}/{self._slug}"
+        url = f"{LISTS_URI}/{self._plugin._slug}"
 
         data = {
             "name": plugin.getSetting("list_name"),
@@ -145,8 +141,8 @@ class LolUpload:
             "User-Agent": "lol-mo2-plugin/" + VERSION,
             "Content-Type": f"multipart/form-data; boundary={boundary}",
         }
-        if self._apiToken:
-            req.add_header("Authorization", "Bearer " + self._apiToken)
+        if self._plugin._apiToken:
+            req.add_header("Authorization", "Bearer " + self._plugin._apiToken)
 
         try:
             # Send the request and get the response

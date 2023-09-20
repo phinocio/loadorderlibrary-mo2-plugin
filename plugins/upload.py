@@ -37,7 +37,7 @@ class LolMo2Upload(mobase.IPluginTool):
     def __init__(self):
         super().__init__()
 
-    def __tr(self, str_):
+    def tr(self, str_):
         return QCoreApplication.translate(self._name, str_)
 
     def init(self, organizer: mobase.IOrganizer):
@@ -57,10 +57,10 @@ class LolMo2Upload(mobase.IPluginTool):
         return "Phinocio"
 
     def description(self) -> str:
-        return self.__tr("Allows uploading directly to Load Order Library.")
+        return self.tr("Allows uploading directly to Load Order Library.")
 
     def version(self) -> mobase.VersionInfo:
-        return mobase.VersionInfo(1, 0, 0, mobase.ReleaseType.BETA)
+        return mobase.VersionInfo(1, 2, 0, mobase.ReleaseType.FINAL)
 
     def isActive(self) -> bool:
         return self._organizer.pluginSetting(self.name(), "enabled")

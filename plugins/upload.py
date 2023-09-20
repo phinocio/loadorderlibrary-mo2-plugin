@@ -60,7 +60,7 @@ class LolMo2Upload(mobase.IPluginTool):
         return self.tr("Allows uploading directly to Load Order Library.")
 
     def version(self) -> mobase.VersionInfo:
-        return mobase.VersionInfo(1, 2, 0, mobase.ReleaseType.FINAL)
+        return mobase.VersionInfo(1, 2, 1, mobase.ReleaseType.FINAL)
 
     def isActive(self) -> bool:
         return self._organizer.pluginSetting(self.name(), "enabled")

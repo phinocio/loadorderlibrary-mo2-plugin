@@ -9,7 +9,7 @@ try:
 except:
     from PyQt6.QtWidgets import QMessageBox
 
-VERSION = "1.2.0"
+VERSION = "1.2.1"
 BASE_URI = "https://api.loadorderlibrary.com/v1"
 LISTS_URI = BASE_URI + "/lists"
 

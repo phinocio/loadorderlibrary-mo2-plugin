@@ -176,7 +176,6 @@ class LolMo2Upload(mobase.IPluginTool):
                 "slug": self._slug,
                 "basePath": self._organizer.basePath(),
             }
-            print(data)
             with open(file, "w") as f:
                 json.dump(data, f)
         except Exception as e:

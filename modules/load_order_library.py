@@ -11,7 +11,7 @@ except:
     from PyQt6.QtWidgets import QMessageBox
 
 VERSION = "1.3.0"
-BASE_URI = "https://api.loadorderlibrary.com/v1"
+BASE_URI = "https://testingapi.loadorderlibrary.com/v1"
 LISTS_URI = BASE_URI + "/lists"
 
 
@@ -190,6 +190,14 @@ class LolUpload:
                         )
                         if ver:
                             return ver.group(1)
+                        else:
+                            # LookupError prob not the most accurate
+                            # but it's better than a generic exception
+                            # and I don't feel like making my own error.
+                            raise LookupError(
+                                "No version could be found in a separator."
+                            )
+
             except Exception as e:
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Icon.Critical)

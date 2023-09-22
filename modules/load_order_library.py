@@ -11,7 +11,7 @@ except:
     from PyQt6.QtWidgets import QMessageBox
 
 VERSION = "1.3.0"
-BASE_URI = "https://loadorderlibrary.com/v1"
+BASE_URI = "https://api.loadorderlibrary.com/v1"
 LISTS_URI = BASE_URI + "/lists"
 
 

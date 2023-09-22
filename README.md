@@ -11,16 +11,17 @@ For now, I'm only comfortable saying Bethesda games are "officially" supported, 
 Use the plugin settings in MO2 to configure things like the list name, version, private, etc.
 The defaults are as follows:
 
-| Setting          | Default                 |
-| ---------------- | ----------------------- |
-| list_name        | My List                 |
-| list_version     | 0.0.1                   |
-| list_description |                         |
-| list_website     |                         |
-| list_discord     |                         |
-| list_readme      |                         |
-| list_private     | False                   |
-| upload_files     | modlist.txt,plugins.txt |
+| Setting              | Default                 | Note                                            |
+| -------------------- | ----------------------- | ----------------------------------------------- |
+| list_name            | My List                 | The name of your list.                          |
+| list_version         | 0.0.1                   | The verison.                                    |
+| list_description     |                         | A short description of the list, optional.      |
+| list_website         |                         | The website for the list, if it has one.        |
+| list_discord         |                         | Discord for list support.                       |
+| list_readme          |                         | The list's readme file.                         |
+| list_private         | False                   | If the list is private or not.                  |
+| upload_files         | modlist.txt,plugins.txt | What files will be uploaded.                    |
+| version_auto_parsing | False                   | Attempt to auto parse version from a separator. |
 
 For files to upload, add them separated by a comma like the default. A list requires at least one file to be uploaded.
 
@@ -73,3 +74,7 @@ If you are using an API Token, future uploads will _update_ the list you just cr
 # Installation
 
 Extract the folder in the archive to `%MO2DIR%/plugins` such that it becomes `%MO2DIR%/plugins/lolmo2plugin`
+
+# Known Issues/Limitation
+
+Currently, if one wants to upload a list without a version and they remove the defualt, lists will be uploaded with a version of `None`.

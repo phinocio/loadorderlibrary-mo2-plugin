@@ -3,14 +3,15 @@ import os
 import json
 import urllib.parse
 import urllib.request as request
+import re
 
 try:
     from PyQt5.QtWidgets import QMessageBox
 except:
     from PyQt6.QtWidgets import QMessageBox
 
-VERSION = "1.2.1"
-BASE_URI = "https://api.loadorderlibrary.com/v1"
+VERSION = "1.3.0"
+BASE_URI = "https://loadorderlibrary.com/v1"
 LISTS_URI = BASE_URI + "/lists"
 
 
@@ -48,7 +49,7 @@ class LolUpload:
         "Zeus and Poseidon": 27,
     }
 
-    def __init__(self, plugin, apiToken=None, slug=None):
+    def __init__(self, plugin):
         self._plugin = plugin
 
     def upload(self):
@@ -61,11 +62,12 @@ class LolUpload:
 
     def updateList(self, plugin):
         url = f"{LISTS_URI}/{self._plugin._slug}"
+        version = self._getVersion(plugin)
 
         data = {
             "name": plugin.getSetting("list_name"),
             "game": str(self._gameIds[plugin._organizer.managedGame().gameName()]),
-            "version": plugin.getSetting("list_version"),
+            "version": version,
             "description": plugin.getSetting("list_description"),
             "website": plugin.getSetting("list_website"),
             "discord": plugin.getSetting("list_discord"),
@@ -88,11 +90,12 @@ class LolUpload:
 
     def createList(self, plugin):
         url = LISTS_URI
+        version = self._getVersion(plugin)
 
         data = {
             "name": plugin.getSetting("list_name"),
             "game": str(self._gameIds[plugin._organizer.managedGame().gameName()]),
-            "version": plugin.getSetting("list_version"),
+            "version": version,
             "description": plugin.getSetting("list_description"),
             "website": plugin.getSetting("list_website"),
             "discord": plugin.getSetting("list_discord"),
@@ -169,3 +172,38 @@ class LolUpload:
                 error_response_data = e.read()
                 # Process the error response data as needed
                 return json.loads(error_response_data.decode("utf-8"))
+
+    def _getVersion(self, plugin):
+        autoParse = plugin.getSetting("version_auto_parsing")
+
+        if autoParse:
+            try:
+                with open(
+                    f"{plugin._organizer.profile().absolutePath()}/modlist.txt"
+                ) as f:
+                    lines = f.readlines()
+                    for line in lines:
+                        # Doesn't 100% adhere to semver, but I don't force semver on
+                        # Load Order Library anyway, so that's fine.
+                        ver = re.search(
+                            "^^-.*v(\d+\.\d+\.\d+[^\s]*).*_separator$", line
+                        )
+                        if ver:
+                            return ver.group(1)
+                        else:
+                            # LookupError prob not the most accurate
+                            # but it's better than a generic exception
+                            # and I don't feel like making my own error.
+                            raise LookupError(
+                                "No version could be found in a separator."
+                            )
+
+            except Exception as e:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Icon.Critical)
+                msg.setWindowTitle("File Read Error!")
+                msg.setText(f"Something went wrong looking for a version. {e}")
+                msg.exec()
+                raise
+        else:
+            return re.sub("^v?", "", plugin.getSetting("list_version"))

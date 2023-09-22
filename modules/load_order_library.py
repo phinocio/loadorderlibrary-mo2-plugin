@@ -186,7 +186,7 @@ class LolUpload:
                         # Doesn't 100% adhere to semver, but I don't force semver on
                         # Load Order Library anyway, so that's fine.
                         ver = re.search(
-                            "^^-.*v?(\d+\.\d+\.\d+[^\s]*).*_separator$", line
+                            "^[-|\+].*v?(\d+\.\d+\.\d+[^\s]*).*_separator$", line
                         )
                         if ver:
                             return ver.group(1)

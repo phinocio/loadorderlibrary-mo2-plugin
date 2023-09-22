@@ -28,7 +28,7 @@ class LolMo2Upload(mobase.IPluginTool):
     _organizer: mobase.IOrganizer
     _profile: mobase.IProfile
     _name = "Load Order Library Upload"
-    _frontendUrl = "https://testing.loadorderlibrary.com"
+    _frontendUrl = "https://loadorderlibrary.com"
     _appDataDir = "LoadOrderLibrary"
     _dataFile = ""
     _apiToken = None

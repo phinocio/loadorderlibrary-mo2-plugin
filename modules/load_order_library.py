@@ -10,7 +10,7 @@ try:
 except:
     from PyQt6.QtWidgets import QMessageBox
 
-VERSION = "1.3.0"
+VERSION = "1.3.1"
 BASE_URI = "https://api.loadorderlibrary.com/v1"
 LISTS_URI = BASE_URI + "/lists"
 
@@ -186,7 +186,7 @@ class LolUpload:
                         # Doesn't 100% adhere to semver, but I don't force semver on
                         # Load Order Library anyway, so that's fine.
                         ver = re.search(
-                            "^^-.*v(\d+\.\d+\.\d+[^\s]*).*_separator$", line
+                            "^^-.*v?(\d+\.\d+\.\d+[^\s]*).*_separator$", line
                         )
                         if ver:
                             return ver.group(1)

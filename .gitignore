@@ -2,3 +2,4 @@ lol-venv
 __pycache__
 .mypy_cache
 *.7z
+lolmo2plugin/

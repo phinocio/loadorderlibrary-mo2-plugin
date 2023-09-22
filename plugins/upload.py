@@ -60,7 +60,7 @@ class LolMo2Upload(mobase.IPluginTool):
         return self.tr("Allows uploading directly to Load Order Library.")
 
     def version(self) -> mobase.VersionInfo:
-        return mobase.VersionInfo(1, 2, 1, mobase.ReleaseType.FINAL)
+        return mobase.VersionInfo(1, 3, 0, mobase.ReleaseType.FINAL)
 
     def isActive(self) -> bool:
         return self._organizer.pluginSetting(self.name(), "enabled")
@@ -79,6 +79,11 @@ class LolMo2Upload(mobase.IPluginTool):
                 "upload_files",
                 "A list of the files to upload",
                 "modlist.txt,plugins.txt",
+            ),
+            self.setSetting(
+                "version_auto_parsing",
+                "Attempt to auto parse the version from a separator. Looks for semver format.",
+                False,
             ),
         ]
 
@@ -134,7 +139,7 @@ class LolMo2Upload(mobase.IPluginTool):
 
     def popup_button(self, i) -> None:
         if i.text() == "OK":
-            lolUpload = LolUpload(self, self._apiToken, self._slug)
+            lolUpload = LolUpload(self)  # Pass in the plugin
             list = lolUpload.upload()
             if "data" in list.keys():
                 url = self._frontendUrl + list["data"]["links"]["url"]

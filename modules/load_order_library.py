@@ -190,19 +190,15 @@ class LolUpload:
                         )
                         if ver:
                             return ver.group(1)
-                        else:
-                            # LookupError prob not the most accurate
-                            # but it's better than a generic exception
-                            # and I don't feel like making my own error.
-                            raise LookupError(
-                                "No version could be found in a separator."
-                            )
-
+                    # LookupError prob not the most accurate
+                    # but it's better than a generic exception
+                    # and I don't feel like making my own error.
+                    raise LookupError("No version could be found in a separator.")
             except Exception as e:
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Icon.Critical)
                 msg.setWindowTitle("File Read Error!")
-                msg.setText(f"Something went wrong looking for a version. {e}")
+                msg.setText(f"Something went wrong looking for a version. <b>{e}</b>")
                 msg.exec()
                 raise
         else:

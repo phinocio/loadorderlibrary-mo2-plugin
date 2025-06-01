@@ -10,7 +10,7 @@ try:
 except:
     from PyQt6.QtWidgets import QMessageBox
 
-VERSION = "1.3.1"
+VERSION = "2.0.0"
 BASE_URI = "https://api.loadorderlibrary.com/v1"
 LISTS_URI = BASE_URI + "/lists"
 
@@ -41,6 +41,7 @@ class LolUpload:
         "Tale of Two Wastelands": 10,
         "Morrowind": 1,
         "Oblivion": 2,
+		"Oblivion Remastered": 33,
         "Skyrim": 3,
         "Skyrim Special Edition": 4,
         "Skyrim VR": 5,
@@ -73,7 +74,7 @@ class LolUpload:
             "discord": plugin.getSetting("list_discord"),
             "readme": plugin.getSetting("list_readme"),
             "private": "1" if bool(plugin.getSetting("list_readme")) else "0",
-            "_method": "PUT",
+            "_method": "PATCH",
         }
 
         files = []
